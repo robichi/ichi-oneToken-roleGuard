@@ -6,6 +6,7 @@ const
     Token6 = artifacts.require("Token6"),
     Token9 = artifacts.require("Token9");
     Token18 = artifacts.require("Token18");
+    RoleGuard = artifacts.require("RoleGuardOneTokenV1");
 
 module.exports = async () => {
     const [governance] = await ethers.getSigners();
@@ -24,6 +25,9 @@ module.exports = async () => {
 
     const token18 = await Token18.new();
     Token18.setAsDeployed(token18);
+
+    const roleGuardOneTokenV1 = await RoleGuard.new(memberToken.address);
+    RoleGuard.setAsDeployed(roleGuardOneTokenV1);
 
     const balMT = await memberToken.balanceOf(governance.address);
     const balCT = await collateralToken.balanceOf(governance.address);
