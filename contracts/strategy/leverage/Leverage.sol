@@ -6,6 +6,7 @@ import '../StrategyCommon.sol';
 import '../../interface/IICHIVaultFactory.sol';
 import '../../interface/IICHIVault.sol';
 import '../../interface/IOneTokenV1.sol';
+import '../../interface/IOracle.sol';
 
 contract Leverage is StrategyCommon {
 
@@ -16,11 +17,19 @@ contract Leverage is StrategyCommon {
     address public immutable token0;
     address public immutable token1;
     address public immutable memberToken;
-    address public immutable collateral;
     bool public immutable allowToken0;
     bool public immutable allowToken1;
 
-    event LeverageStrategy(address sender, address oneToken, string description, address pool, address token0, address token1, bool allowToken0, bool allowToken1);
+    event LeverageStrategy(
+        address sender, 
+        address oneToken, 
+        string description, 
+        address pool, 
+        address memberToken, 
+        address token0, 
+        address token1, 
+        bool allowToken0, 
+        bool allowToken1);
     event Execute(address sender, uint256 allowance0, uint256 allowance1, uint256 shares);
 
     /**
@@ -35,7 +44,6 @@ contract Leverage is StrategyCommon {
         address _oneTokenFactory, 
         address _oneToken, 
         string memory _description,
-        address _collateral,
         address _ichiVault,
         address _ichiVaultFactory
         ) 
@@ -52,7 +60,7 @@ contract Leverage is StrategyCommon {
             bool _allowToken0 = IICHIVault(_ichiVault).allowToken0();
             bool _allowToken1 = IICHIVault(_ichiVault).allowToken1(); 
             address _memberToken = IOneTokenV1(oneToken).memberToken();
-            address _leverageToken = (_memberToken != _token0) ? _token0 : _token1;
+            address _leverageToken = (_memberToken == _token0) ? _token1 : _token0;
 
             if(_leverageToken == _token0) {
                 require( _memberToken == _token1, 'Leverage::constructor: member token from OneToken is not used in the given IchiVault (1)');
@@ -60,22 +68,19 @@ contract Leverage is StrategyCommon {
                 require( _memberToken == _token0, 'Leverage::constructor: member token from OneToken is not used in the given IchiVault (2)');
             }
             require(_leverageToken == _oneToken, 'Leverage::constructor: oneToken is not used the given Ichivault');
-            require(IOneTokenV1Base(_oneToken).isCollateral(_collateral), 'Leverage::constructor: collateral');
-            require(IOneTokenV1(_oneToken).isAsset(IICHIVault(_ichiVault).token0()), 'Leverage::constructor: assigned IchiVault token0 is not a OneToken vault asset');
-            require(IOneTokenV1(_oneToken).isAsset(IICHIVault(_ichiVault).token1()), 'Leverage::constructor: assigned IchiVault token1 is not a OneToken vault asset');
 
             token0 = _token0;
             token1 = _token1;
             allowToken0 = _allowToken0;
             allowToken1 = _allowToken1;
             memberToken = _memberToken;
-            collateral = _collateral;
 
             emit LeverageStrategy(
                 msg.sender, 
                 _oneToken, 
                 _description, 
-                _pool, 
+                _pool,
+                _memberToken, 
                 _token0, 
                 _token1, 
                 _allowToken0,
@@ -86,14 +91,59 @@ contract Leverage is StrategyCommon {
     }
 
     /**
-     TODO: This access control recognizes the OneToken owner which could be a roleGuard if the roleGuard is made aware of strategies, generally, and this one in particular.
+     TODO: This access control recognizes the OneToken owner. The owner could be a roleGuard if the roleGuard is made aware of strategies, generally, and this one in particular.
      */
 
     /**
-     @notice Increase leverage. Draws the maximum funds permitted by the allowance granted by the OneToken vault to the strategy
+     @notice Increase leverage. Draws the maximum funds permitted by the allowances set and strategy assigned by the OneToken vault
      @dev called from oneToken governance or the active controller. Overriding function should emit the event. 
      */  
     function execute() external virtual strategyOwnerTokenOrController override {
+
+        address token;
+        address oracle;
+        address strategy;
+        uint256 allowance;
+        uint256 memberTokenBal;
+        uint256 mintingRatio;
+        uint256 maxOrderVolume;
+        uint256 collateralUSDValue;
+        uint256 memberTokensUSDValue;
+        uint256 collateralCount = IOneTokenV1(oneToken).collateralTokenCount();
+
+        // transfer memberTokens, if allowed, and update the Oracle
+
+        allowance = IERC20(memberToken).allowance(oneToken, address(this));
+        (oracle, strategy) = IOneTokenV1(oneToken).assets(memberToken);
+        IOracle(oracle).update(memberToken);        
+        if(allowance > 0 && strategy == address(this)) IERC20(memberToken).safeTransferFrom(oneToken, address(this), allowance);
+        
+        // transfer collateral if all types, if allowed
+        // generally 1 iteration, but possibly 2 or more. Always a small number. 
+
+        for(uint i = 0; i < collateralCount; i++) {
+            token = IOneTokenV1(oneToken).collateralTokenAtIndex(i);
+            allowance = IERC20(token).allowance(oneToken, address(this));
+            (oracle, strategy) = IOneTokenV1(oneToken).assets(memberToken);
+            IOracle(oracle).update(token);         
+            if(allowance > 0 && strategy == address(this)) IERC20(token).safeTransferFrom(oneToken, address(this), allowance);
+
+            // Now, decide what to do. How many OneTokens can we mint?
+            // memberTokenBal = IERC20(memberToken).balanceOf(address(this));
+        }
+
+
+/*
+        (mintingRatio, maxOrderVolume) = IOneTokenV1(oneToken).getMintingRatio(token);
+
+        collateralUSDValue = oneTokens.mul(mintingRatio).div(PRECISION);
+        memberTokensUSDValue = oneTokens.sub(collateralUSDValue);
+
+        memberTokenBal = IERC20(memberToken).balanceOf(address(this));
+*/
+
+/*
+
         uint256 allowance0 = IERC20(token0).allowance(oneToken, address(this));
         uint256 allowance1 = IERC20(token1).allowance(oneToken, address(this));
         uint256 depositMax0 = IICHIVault(ichiVault).deposit0Max();
@@ -101,7 +151,7 @@ contract Leverage is StrategyCommon {
 
         if(allowance0 > 0) IERC20(token0).safeTransferFrom(oneToken, address(this), allowance0);
         if(allowance1 > 0) IERC20(token1).safeTransferFrom(oneToken, address(this), allowance1);
-
+*/
 
 
 /*
@@ -112,8 +162,12 @@ maximum deposit
 
 */
 
+/*
+
         uint256 shares = IICHIVault(ichiVault).deposit(allowance0, allowance1, address(this));
         emit Execute(msg.sender, allowance0, allowance1, shares);
+
+*/
     }  
 
     /**
