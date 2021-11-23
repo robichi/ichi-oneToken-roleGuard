@@ -28,7 +28,10 @@ interface IICHIVaultFactory {
         address tokenB,
         bool allowTokenB,
         uint24 fee,
-        uint256 count);    
+        uint256 count);
+
+    function getIchiVault(bytes32) external view returns(address);
+    function allVaults(uint256) external view returns(address);
 
     function uniswapV3Factory() external view returns(address);
     function feeRecipient() external view returns(address);
