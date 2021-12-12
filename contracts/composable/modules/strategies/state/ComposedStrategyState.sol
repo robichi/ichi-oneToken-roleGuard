@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 
 pragma solidity 0.7.6;
-pragma abicoder v2;
 
-import "../../../../interface/IStrategy.sol";
 import "../../../../interface/IOneTokenFactory.sol";
 import "../../../../interface/IOneTokenV1Base.sol";
+import "../../../../interface/IStrategy.sol";
 
 abstract contract ComposedStrategyState is IStrategy { 
 
