@@ -9,7 +9,7 @@ import "../_openzeppelin/token/ERC20/IERC20.sol";
 import "../_openzeppelin/token/ERC20/SafeERC20.sol";
 import "../common/ICHIModuleCommon.sol";
 
-abstract contract StrategyCommon is IStrategy, ICHIModuleCommon {
+contract StrategyCommon is IStrategy, ICHIModuleCommon {
 
     using SafeERC20 for IERC20;
 
