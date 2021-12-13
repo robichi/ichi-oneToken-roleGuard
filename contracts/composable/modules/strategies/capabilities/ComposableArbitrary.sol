@@ -3,8 +3,9 @@
 pragma solidity 0.7.6;
 
 import { ComposedStrategyState } from "../state/ComposedStrategyState.sol";
-// import "../../../../interface/IStrategy.sol";
+// import { IStrategyStubs } from "../state/IStrategyStubs.sol";
 
-abstract contract ComposableArbitrary is ComposedStrategyState {
+
+contract ComposableArbitrary is ComposedStrategyState {
 
 }
