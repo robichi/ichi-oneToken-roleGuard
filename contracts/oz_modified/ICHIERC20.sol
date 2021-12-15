@@ -5,7 +5,7 @@
 
 pragma solidity >=0.6.0 <0.8.0;
 
-import "../_openzeppelin/utils/Context.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
 import "../_openzeppelin/token/ERC20/IERC20.sol";
 import "../_openzeppelin/math/SafeMath.sol";
 import "./ICHIInitializable.sol";
