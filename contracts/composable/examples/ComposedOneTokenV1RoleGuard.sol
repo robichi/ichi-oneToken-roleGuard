@@ -2,9 +2,9 @@
 
 pragma solidity 0.7.6;
 
-import '../Composed.sol';
+import '../ComposedWallet.sol';
 
-contract ComposedOneTokenV1RoleGuard is Composed { 
+contract ComposedOneTokenV1RoleGuard is ComposedWallet { 
 
     constructor(address _composableOneTokenV1RoleGuard, address target) {
         addComposable(_composableOneTokenV1RoleGuard, target);

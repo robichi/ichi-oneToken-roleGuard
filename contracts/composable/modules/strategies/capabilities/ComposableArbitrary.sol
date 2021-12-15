@@ -6,7 +6,6 @@ pragma abicoder v2;
 import { StrategyCommon } from "../../../../strategy/StrategyCommon.sol";
 import { Composable } from "../../../Composable.sol";
 
-
 contract ComposableArbitrary is StrategyCommon, Composable {
 
     /**
@@ -15,6 +14,7 @@ contract ComposableArbitrary is StrategyCommon, Composable {
     @param oneToken_ an abstract token. Actual token bindings are established by delegateCall-ers. 
     @param description_ metadata to be readable by regular call - not copied to delegateCall-ers.
      */
+
     constructor(address oneTokenFactory_, address oneToken_, string memory description_)
         StrategyCommon(oneTokenFactory_, oneToken_, description_)
     {
