@@ -6,6 +6,8 @@ pragma abicoder v2;
 import './interfaces/IComposable.sol';
 import './lib/Bytes4Set.sol';
 
+// TODO: Move this to modules
+
 /**************************************************************************************************************************
  * Composables should inherit this and register their external unctions from constructors - append only
  **************************************************************************************************************************/

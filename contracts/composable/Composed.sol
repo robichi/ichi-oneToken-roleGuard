@@ -8,10 +8,11 @@ import './interfaces/Common.sol';
 import './lib/Bytes4Set.sol';
 import './components/DestructableAccessControl.sol';
 
+// TODO: Move this to Components
+
 /**
- This can be deployed as an unnassuming, flexible composed instance or inherited by contracts that attend to
- configuration concerns. Consider renouncing the ROLE_COMPOSER role when the configuration is finalized to
- prevent any further changes to the composition. 
+ This should only be inherited by Stategies that first inherit StrategyCommon to ensure correct state layout
+ of Strategy configurations. 
  */
 
 contract Composed is Common, DestructableAccessControl { // is IStrategy
