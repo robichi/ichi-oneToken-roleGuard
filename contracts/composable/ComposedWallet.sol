@@ -3,13 +3,11 @@
 pragma solidity 0.7.6;
 
 import './interfaces/IComposedWallet.sol';
-import './Composed.sol';
-import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
+import './components/Composed.sol';
 import './components/DestructableAccessControl.sol';
+import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 
 contract ComposedWallet is IComposedWallet, Composed { 
-
-    // TODO: Consider implementing these functions as a Composable using delegated function calls.
 
     using SafeERC20 for IERC20;
     

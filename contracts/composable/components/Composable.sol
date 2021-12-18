@@ -3,10 +3,8 @@
 pragma solidity 0.7.6;
 pragma abicoder v2;
 
-import './interfaces/IComposable.sol';
-import './lib/Bytes4Set.sol';
-
-// TODO: Move this to modules
+import '../interfaces/IComposable.sol';
+import '../lib/Bytes4Set.sol';
 
 /**************************************************************************************************************************
  * Composables should inherit this and register their external unctions from constructors - append only
@@ -35,7 +33,7 @@ contract Composable is IComposable {
      */
 
     function registerFunction(string memory nameAndParameters, bool delegate) internal {
-        bytes4 selecter = bytes4(keccak256(bytes(nameAndParameters))); // TODO: CONFIRM THIS HASHING FUNCTION
+        bytes4 selecter = bytes4(keccak256(bytes(nameAndParameters)));
         functionSet.insert(selecter, nameAndParameters);
         Function memory thisFunction = Function({
                 nameAndParams: nameAndParameters,

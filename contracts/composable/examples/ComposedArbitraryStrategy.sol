@@ -3,7 +3,7 @@
 pragma solidity 0.7.6;
 pragma abicoder v2;
 
-import "../Composed.sol";
+import "../components/Composed.sol";
 
 contract ComposedArbitraryStrategy is Composed { 
 

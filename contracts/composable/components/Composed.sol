@@ -4,11 +4,9 @@ pragma solidity 0.7.6;
 pragma abicoder v2;
 
 import './Composable.sol';
-import './interfaces/Common.sol';
-import './lib/Bytes4Set.sol';
-import './components/DestructableAccessControl.sol';
-
-// TODO: Move this to Components
+import './DestructableAccessControl.sol';
+import '../interfaces/Common.sol';
+import '../lib/Bytes4Set.sol';
 
 /**
  This should only be inherited by Stategies that first inherit StrategyCommon to ensure correct state layout

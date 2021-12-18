@@ -2,7 +2,6 @@
 
 pragma solidity 0.7.6;
 
-// import '../Composed.sol';
 import '../ComposedWallet.sol';
 
 contract ComposedOneTokenV1AndStrategyRoleGuard is ComposedWallet { 

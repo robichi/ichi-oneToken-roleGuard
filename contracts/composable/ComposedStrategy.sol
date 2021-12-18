@@ -2,13 +2,10 @@
 
 pragma solidity 0.7.6;
 
-import { Composed } from "../../Composed.sol";
-import { StrategyCommon } from "../../../strategy/StrategyCommon.sol";
+import { Composed } from "./components/Composed.sol";
+import { StrategyCommon } from "../strategy/StrategyCommon.sol";
 
 // TODO: Consider a Factory to deploy instances of these
-
-// TODO: Promote to the top for normalized Composed Strategy root. 
-// TODO: Create a similar Composed Role Guard root. 
 
 /**
  Deploys a Composed Strategy supporting the minimum viable interface to OneToken Vaults and Controllers, with
