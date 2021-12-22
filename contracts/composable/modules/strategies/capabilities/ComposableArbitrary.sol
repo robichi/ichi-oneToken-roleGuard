@@ -4,7 +4,7 @@ pragma solidity 0.7.6;
 pragma abicoder v2;
 
 import { StrategyCommon } from "../../../../strategy/StrategyCommon.sol";
-import { Composable } from "../../../Composable.sol";
+import { Composable } from "../../../components/Composable.sol";
 
 contract ComposableArbitrary is StrategyCommon, Composable {
 

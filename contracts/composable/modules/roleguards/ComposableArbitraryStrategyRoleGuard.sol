@@ -3,7 +3,7 @@
 pragma solidity 0.7.6;
 pragma abicoder v2;
 
-import '../../Composable.sol';
+import '../../components/Composable.sol';
 
 contract ComposableArbitraryStrategyRoleGuard is Composable {
 
