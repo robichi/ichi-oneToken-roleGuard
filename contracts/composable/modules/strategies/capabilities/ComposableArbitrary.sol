@@ -6,6 +6,9 @@ pragma abicoder v2;
 import { StrategyCommon } from "../../../../strategy/StrategyCommon.sol";
 import { Composable } from "../../../components/Composable.sol";
 
+// TODO: Consider cleaning up superfluous code by creating a StrategyState to enable stateless StrategyCommon implementation.
+
+
 contract ComposableArbitrary is StrategyCommon, Composable {
 
     /**

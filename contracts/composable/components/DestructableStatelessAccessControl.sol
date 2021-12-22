@@ -2,9 +2,9 @@
 
 pragma solidity 0.7.6;
 
-import '@openzeppelin/contracts/access/AccessControl.sol';
+import './StateSafeAccessControl.sol';
 
-contract DestructableAccessControl is AccessControl {
+contract DestructableStatelessAccessControl is StateSafeAccessControl {
 
     event RoleDestroyed(address sender, bytes32 indexed role);
 

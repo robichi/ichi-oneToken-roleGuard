@@ -12,7 +12,7 @@ import { StrategyCommon } from "../strategy/StrategyCommon.sol";
  the ability to ingest Composable extensions. 
  */
 
-contract ComposedStrategy is StrategyCommon, Composed {
+contract ComposedStrategy is Composed, StrategyCommon {
 
     constructor(address oneTokenFactory_, address oneToken_, string memory description_)
         StrategyCommon(oneTokenFactory_, oneToken_, description_)

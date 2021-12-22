@@ -1,25 +1,19 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: BUSL-1.1
 
 pragma solidity 0.7.6;
 pragma abicoder v2;
 
+import './ComposedState.sol';
 import './Composable.sol';
-import './DestructableAccessControl.sol';
+import './DestructableStatelessAccessControl.sol';
 import '../interfaces/Common.sol';
 import '../lib/Bytes4Set.sol';
 
-/**
- This should only be inherited by Stategies that first inherit StrategyCommon to ensure correct state layout
- of Strategy configurations. 
- */
+contract Composed is Common, DestructableStatelessAccessControl { // is IStrategy
 
-contract Composed is Common, DestructableAccessControl { // is IStrategy
-
-    using Bytes4Set for Bytes4Set.Set;
-
-    bytes32 public constant ROLE_COMPOSER= keccak256('Composer role');
-    Bytes4Set.Set implementationSet;
-    mapping(bytes4 => Implementation) public implementation;
+    bytes32 public constant ROLE_COMPOSER = keccak256('Composer Role');
+    
+    address public immutable composition;
 
     modifier onlyRole(bytes32 role) {
         require(hasRole(role, msg.sender), 'Composed::onlyRole: unauthorized');
@@ -28,6 +22,10 @@ contract Composed is Common, DestructableAccessControl { // is IStrategy
 
     event ComposableAdded(address sender, address composable, address target);
     event ComposableRemoved(address sender, address composable);
+
+    constructor() {
+        composition = address(new ComposedState());
+    }
 
     /***************************************************************************
      * Composable Ingress, Egress
@@ -43,13 +41,17 @@ contract Composed is Common, DestructableAccessControl { // is IStrategy
 
         for( uint256 i=0; i < funcs.length; i++ ) {
             bytes4 sel = funcs[i].selecter;
-            string memory name = funcs[i].nameAndParams;
-            implementationSet.insert(sel, name);
+
+            Implementation memory imp = Implementation({
+                nameAndParams: funcs[i].nameAndParams,
+                implementation: target, // TODO: consider delegated, non-delegated logic here
+                delegate: funcs[i].delegate
+            });
+
+            ComposedState(composition).insert(sel, imp);
             bytes32 role = getRole(sel);
             _setupRole(role, msg.sender);
-            Implementation storage imp = implementation[sel];
-            imp.nameAndParams = name;
-            imp.implementation = target;
+
         }
         emit ComposableAdded(msg.sender, composable, target);
     }
@@ -64,11 +66,9 @@ contract Composed is Common, DestructableAccessControl { // is IStrategy
 
         for( uint256 i=0; i<funcs.length; i++ ) {
             bytes4 sel = funcs[i].selecter;
-            string memory name = funcs[i].nameAndParams;
-            implementationSet.remove(sel, name);
+            ComposedState(composition).remove(sel);
             bytes32 role = getRole(sel);
             _destroyRole(role);
-            delete implementation[sel];
         }
         emit ComposableRemoved(msg.sender, composable);
     }
@@ -90,18 +90,17 @@ contract Composed is Common, DestructableAccessControl { // is IStrategy
         bytes4 sel = msg.sig;
 
         // cannot call an uncontrolled function
-        require(implementationSet.exists(sel), concat('Composed::fallback: unknown function selecter ', string(msg.data)));
+        require(ComposedState(composition).exists(sel), concat('Composed::fallback: unknown function selecter ', string(msg.data)));
 
         // must be authorized to call the function
         require(hasRole(getRole(sel), msg.sender), concat('Composed::fallback: permission denied ', string(msg.data)));
 
-        Implementation storage imp = implementation[sel];
-        bool delegate = imp.delegate;
+        (/* string */, address imp, bool delegate)= ComposedState(composition).implementation(sel);
 
         if(!delegate) {
-            _call(imp.implementation);
+            _call(imp);
         } else {
-            _delegate(imp.implementation);
+            _delegate(imp);
         }
         revert('Composed::_fallback: 500 - hit unreachable code');
     }
@@ -205,15 +204,15 @@ contract Composed is Common, DestructableAccessControl { // is IStrategy
 
     function isImplemented(string memory nameAndParams) external view returns(bool) {
         bytes4 sel = getSelecter(nameAndParams);
-        return implementationSet.exists(sel);
+        return ComposedState(composition).exists(sel);
     }
 
     function implementationCount() external view returns(uint256 count) {
-        count = implementationSet.count();
+        count = ComposedState(composition).count();
     }
 
     function implementationAtIndex(uint256 index) external view returns(bytes4 selecter) {
-        selecter = implementationSet.keyAtIndex(index);
+        selecter = ComposedState(composition).keyAtIndex(index);
     }
 
 }

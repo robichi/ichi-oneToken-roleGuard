@@ -4,10 +4,10 @@ pragma solidity 0.7.6;
 
 import './interfaces/IComposedWallet.sol';
 import './components/Composed.sol';
-import './components/DestructableAccessControl.sol';
+import './components/DestructableStatelessAccessControl.sol';
 import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 
-contract ComposedWallet is IComposedWallet, Composed { 
+contract ComposedWallet is  Composed, IComposedWallet  { 
 
     using SafeERC20 for IERC20;
     
