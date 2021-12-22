@@ -13,11 +13,11 @@ contract ComposedOneTokenV1AndStrategyRoleGuard is ComposedWallet {
         address _oneTokenTarget, 
         address _strategyTarget
     ) {
-        addComposable(_composableOneTokenV1RoleGuard, _oneTokenTarget);
-        addComposable(_composableOneTokenStrategyRoleGuard, _strategyTarget);
-        addComposable(_composableArbitraryStrategyRoleGuard, _strategyTarget);
+        // addComposable(_composableOneTokenV1RoleGuard, _oneTokenTarget);
+        // addComposable(_composableOneTokenStrategyRoleGuard, _strategyTarget);
+        // addComposable(_composableArbitraryStrategyRoleGuard, _strategyTarget);
         // make the composition immutible
-        renounceRole(ROLE_COMPOSER,  msg.sender);
+        // renounceRole(ROLE_COMPOSER,  msg.sender);
     }
 
 }

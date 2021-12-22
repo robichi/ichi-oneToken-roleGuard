@@ -8,7 +8,7 @@ import '../../components/Composable.sol';
 contract ComposableArbitraryStrategyRoleGuard is Composable {
 
     constructor() {
-        registerFunction('executeTransaction(address,uint256,string,bytes)', false);
+        // TODO: registerFunction('executeTransaction(address,uint256,string,bytes)', false);
     }
 
 }

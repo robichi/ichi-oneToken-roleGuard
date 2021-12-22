@@ -3,7 +3,7 @@
 pragma solidity 0.7.6;
 
 import { Composed } from "./components/Composed.sol";
-import { StrategyCommon } from "../strategy/StrategyCommon.sol";
+import { StatelessStrategyCommon } from "./components/StatelessStrategyCommon.sol";
 
 // TODO: Consider a Factory to deploy instances of these
 
@@ -12,10 +12,10 @@ import { StrategyCommon } from "../strategy/StrategyCommon.sol";
  the ability to ingest Composable extensions. 
  */
 
-contract ComposedStrategy is Composed, StrategyCommon {
+contract ComposedStrategy is Composed, StatelessStrategyCommon {
 
     constructor(address oneTokenFactory_, address oneToken_, string memory description_)
-        StrategyCommon(oneTokenFactory_, oneToken_, description_)
+        StatelessStrategyCommon(oneTokenFactory_, oneToken_, description_)
     {}
 
 }

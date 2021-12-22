@@ -4,14 +4,14 @@ pragma solidity 0.7.6;
 
 import './StateSafeAccessControl.sol';
 
-contract DestructableStatelessAccessControl is StateSafeAccessControl {
+contract StatelessDestructableAccessControl is StateSafeAccessControl {
 
     event RoleDestroyed(address sender, bytes32 indexed role);
 
     /**
      * @notice tears down permissions for role
      * @param role role to destroy
-     * @dev it is understood that roles should not be granted to excessive numbers of user accounts
+     * @dev it is understood that roles member counts should not be excessive
      */
 
     function _destroyRole(bytes32 role) internal {

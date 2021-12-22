@@ -3,6 +3,7 @@
 pragma solidity 0.7.6;
 pragma abicoder v2;
 
+import './ComposableState.sol';
 import '../interfaces/IComposable.sol';
 import '../lib/Bytes4Set.sol';
 
@@ -12,15 +13,16 @@ import '../lib/Bytes4Set.sol';
 
 contract Composable is IComposable { 
 
-    using Bytes4Set for Bytes4Set.Set;
-    // ensure uniqueness
-    Bytes4Set.Set functionSet;
-    // enable random access
-    mapping(bytes4 => Function) public functionMap;
-    // return entire set
-    Function[] functionList;
+    address public immutable composableState;
 
+    event Deployed(address sender, address state);
     event RegisterFunction(address sender, string nameAndParams, bytes4 signature);
+
+    constructor() {
+        address state = address(new ComposableState());
+        composableState = state;
+        emit Deployed(msg.sender, state);
+    }
 
     /**********************************************************************************************************************
      * Call as many times as needed to register the complete function list. Discrete functions can only be registered once.
@@ -33,16 +35,10 @@ contract Composable is IComposable {
      */
 
     function registerFunction(string memory nameAndParameters, bool delegate) internal {
-        bytes4 selecter = bytes4(keccak256(bytes(nameAndParameters)));
-        functionSet.insert(selecter, nameAndParameters);
-        Function memory thisFunction = Function({
-                nameAndParams: nameAndParameters,
-                selecter: selecter,
-                delegate: delegate
-            });
-        functionList.push(thisFunction);
-        functionMap[selecter] = thisFunction;
-        emit RegisterFunction(msg.sender, nameAndParameters, selecter);
+        emit RegisterFunction(
+            msg.sender, 
+            nameAndParameters, 
+            ComposableState(composableState).registerFunction(nameAndParameters, delegate));
     }
 
     /**********************************************************************************************************************
@@ -55,7 +51,7 @@ contract Composable is IComposable {
      */
 
     function functions() external view override returns(Function[] memory) {
-        return functionList;
+        return ComposableState(composableState).functions();
     }
 
 }

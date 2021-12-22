@@ -5,11 +5,11 @@ pragma abicoder v2;
 
 import './ComposedState.sol';
 import './Composable.sol';
-import './DestructableStatelessAccessControl.sol';
+import './StatelessDestructableAccessControl.sol';
 import '../interfaces/Common.sol';
 import '../lib/Bytes4Set.sol';
 
-contract Composed is Common, DestructableStatelessAccessControl { // is IStrategy
+contract Composed is Common, StatelessDestructableAccessControl { // is IStrategy
 
     bytes32 public constant ROLE_COMPOSER = keccak256('Composer Role');
     
@@ -20,11 +20,14 @@ contract Composed is Common, DestructableStatelessAccessControl { // is IStrateg
         _;
     }
 
+    event DeployedComposedState(address sender, address state);
     event ComposableAdded(address sender, address composable, address target);
     event ComposableRemoved(address sender, address composable);
 
     constructor() {
-        composition = address(new ComposedState());
+        address compo = address(new ComposedState());
+        composition = compo;
+        emit DeployedComposedState(msg.sender, compo);
     }
 
     /***************************************************************************

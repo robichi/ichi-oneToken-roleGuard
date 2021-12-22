@@ -21,7 +21,7 @@ contract ComposableArbitrary is StrategyCommon, Composable {
     constructor(address oneTokenFactory_, address oneToken_, string memory description_)
         StrategyCommon(oneTokenFactory_, oneToken_, description_)
     {
-        registerFunction("executeTransaction(address,uint256,string memory,bytes memory)", true);
+        // registerFunction("executeTransaction(address,uint256,string memory,bytes memory)", true);
     }
 
     /**

@@ -8,9 +8,9 @@ import "../components/Composed.sol";
 contract ComposedArbitraryStrategy is Composed { 
 
     constructor(address _composableArbitraryStrategy) {
-        addComposable(_composableArbitraryStrategy, _composableArbitraryStrategy);
+        // addComposable(_composableArbitraryStrategy, _composableArbitraryStrategy);
         // make the composition immutible
-        renounceRole(ROLE_COMPOSER,  msg.sender);
+        // renounceRole(ROLE_COMPOSER,  msg.sender);
     }
 
 }

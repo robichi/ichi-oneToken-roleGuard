@@ -6,17 +6,20 @@ import "./AccessControlState.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 
 
-abstract contract StateSafeAccessControl is Context {
+contract StateSafeAccessControl is Context {
 
     address public immutable state;
     bytes32 public constant DEFAULT_ADMIN_ROLE = 0x00;
 
+    event DeployedAccessControlState(address sender, address state);
     event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole);
     event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender);
     event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender);
 
     constructor() {
-        state = address(new AccessControlState());
+        address ac_state = address(new AccessControlState());
+        state = ac_state;
+        emit DeployedAccessControlState(_msgSender(), ac_state);
     }
 
     function hasRole(bytes32 role, address account) public view returns (bool) {

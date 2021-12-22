@@ -7,9 +7,9 @@ import '../ComposedWallet.sol';
 contract ComposedOneTokenV1RoleGuard is ComposedWallet { 
 
     constructor(address _composableOneTokenV1RoleGuard, address target) {
-        addComposable(_composableOneTokenV1RoleGuard, target);
+        // TODO addComposable(_composableOneTokenV1RoleGuard, target);
         // make the composition immutible
-        renounceRole(ROLE_COMPOSER,  msg.sender);
+        // renounceRole(ROLE_COMPOSER,  msg.sender);
     }
 
 }
