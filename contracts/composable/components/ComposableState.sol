@@ -16,6 +16,8 @@ contract ComposableState is IComposable, Ownable {
     mapping(bytes4 => Function) public functionMap;
     // return entire set
     Function[] functionList;
+    // ensure initialized
+    bool public isInitialized;
 
     /**
      * @notice Composables should call, usually from constructor, to register their function surface 
@@ -33,6 +35,10 @@ contract ComposableState is IComposable, Ownable {
             });
         functionList.push(thisFunction);
         functionMap[selecter] = thisFunction;
+    }
+
+    function setInitialized() external onlyOwner {
+        isInitialized = true;
     }
 
     /**********************************************************************************************************************

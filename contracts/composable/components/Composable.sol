@@ -15,7 +15,18 @@ contract Composable is IComposable {
 
     address public immutable composableState;
 
+    modifier initialized {
+        require(ComposableState(composableState).isInitialized(), 'Composable::initialized: not initialized');
+        _;
+    }
+    
+    modifier uninitialized {
+        require(!ComposableState(composableState).isInitialized(), 'Composable::initialized: not initialized');
+        _;
+    }
+
     event Deployed(address sender, address state);
+    event Initialized(address sender);
     event RegisterFunction(address sender, string nameAndParams, bytes4 signature);
 
     constructor() {
@@ -26,6 +37,7 @@ contract Composable is IComposable {
 
     /**********************************************************************************************************************
      * Call as many times as needed to register the complete function list. Discrete functions can only be registered once.
+     * No effect after initialized.
      **********************************************************************************************************************/
 
     /**
@@ -35,10 +47,17 @@ contract Composable is IComposable {
      */
 
     function registerFunction(string memory nameAndParameters, bool delegate) internal {
-        emit RegisterFunction(
-            msg.sender, 
-            nameAndParameters, 
-            ComposableState(composableState).registerFunction(nameAndParameters, delegate));
+        if(!ComposableState(composableState).isInitialized()) {
+            emit RegisterFunction(
+                msg.sender, 
+                nameAndParameters, 
+                ComposableState(composableState).registerFunction(nameAndParameters, delegate));
+        }
+    }
+
+    function setInitialized() internal {
+        ComposableState(composableState).setInitialized();
+        emit Initialized(msg.sender);
     }
 
     /**********************************************************************************************************************
@@ -50,7 +69,7 @@ contract Composable is IComposable {
      * @return array of configured Functions incl. interface, selector and execution mode
      */
 
-    function functions() external view override returns(Function[] memory) {
+    function functions() external view override initialized returns(Function[] memory) {
         return ComposableState(composableState).functions();
     }
 

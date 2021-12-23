@@ -7,8 +7,7 @@ import '../../components/Composable.sol';
 
 contract ComposableOneTokenV1RoleGuard is Composable {
 
-    constructor() {
-        /* TODO
+    function initialize() external uninitialized {
             registerFunction('mint(address,oneTokens)', false);
             registerFunction('redeem(address,uint256)', false);
             registerFunction('setMintingFee(uint)', false);
@@ -25,7 +24,7 @@ contract ComposableOneTokenV1RoleGuard is Composable {
             registerFunction('increaseStrategyAllowance(address,uint256)', false);
             registerFunction('decreaseStrategyAllowance(address,uint256)', false);
             registerFunction('setFactory(address)', false);
-        */
+            setInitialized();
     }
 
 }

@@ -7,8 +7,7 @@ import '../../components/Composable.sol';
 
 contract ComposableOneTokenStrategyRoleGuard is Composable {
 
-    constructor() {
-        /*
+    function initialize() external uninitialized {
         registerFunction('init()', false);
         registerFunction('execute()', false);
         registerFunction('etAllowance(address,uint256)', false);
@@ -17,7 +16,7 @@ contract ComposableOneTokenStrategyRoleGuard is Composable {
         registerFunction('closeAllPositions()', false);
         registerFunction('closePositions(address)', false);
         registerFunction('oneToken()', false);
-        */
+        setInitialized();
     }
 
 }
