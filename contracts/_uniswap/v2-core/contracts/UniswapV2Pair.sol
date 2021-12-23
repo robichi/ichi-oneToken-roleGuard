@@ -6,7 +6,7 @@ import './libraries/UQ112x112.sol';
 import './interfaces/IUniswapV2Pair.sol';
 import './interfaces/IUniswapV2Factory.sol';
 import "./libraries/UniSafeMath.sol";
-import "../../../_openzeppelin/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract UniswapV2Pair is IUniswapV2Pair {
     using UniSafeMath  for uint256;

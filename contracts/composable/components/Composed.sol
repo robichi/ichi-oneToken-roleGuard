@@ -4,11 +4,11 @@ pragma solidity 0.7.6;
 pragma abicoder v2;
 
 import './ComposedState.sol';
-import './Composable.sol';
 import './StatelessDestructableAccessControl.sol';
-import '../interfaces/Common.sol';
+import '../interfaces/IComposable.sol';
+import '../interfaces/ComposableCommon.sol';
 
-contract Composed is Common, StatelessDestructableAccessControl { // is IStrategy
+contract Composed is ComposableCommon, StatelessDestructableAccessControl { // is IStrategy
 
     bytes32 public constant ROLE_COMPOSER = keccak256('Composer Role');
     
@@ -46,7 +46,7 @@ contract Composed is Common, StatelessDestructableAccessControl { // is IStrateg
 
             Implementation memory imp = Implementation({
                 nameAndParams: funcs[i].nameAndParams,
-                implementation: target, // TODO: consider delegated, non-delegated logic here
+                implementation: ( funcs[i].delegate ) ? composable : target, 
                 delegate: funcs[i].delegate
             });
 

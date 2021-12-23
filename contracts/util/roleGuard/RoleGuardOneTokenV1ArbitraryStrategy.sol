@@ -29,7 +29,7 @@ interface IOneTokenV1Minimal {
     function setFactory(address newFactory) external;
 }
 
-interface IStrategy {
+interface IStrategy2 {
     function init() external;
     function execute() external;
     function setAllowance(address token, uint256 amount) external;
@@ -42,7 +42,7 @@ interface IStrategy {
     function updateDescription(string memory description) external;
 }
 
-interface IArbitrary is IStrategy {
+interface IArbitrary is IStrategy2 {
     function executeTransaction(address _target, uint256 value, string memory signature, bytes memory data) external returns (bytes memory);
 }
 
@@ -139,25 +139,25 @@ contract RoleGuardOneTokenV1ArbitraryStrategy is IRoleGuardOneTokenV1ArbitrarySt
     // Common Strategy functions
 
     function execute(address strategy) external override onlyRole(strategyExecute_role) {
-        IStrategy(strategy).execute();
+        IStrategy2(strategy).execute();
     }
     function setAllowance(address strategy, address token, uint256 amount) external override onlyRole(strategySetAllowance_role) {
-        IStrategy(strategy).setAllowance(token, amount);
+        IStrategy2(strategy).setAllowance(token, amount);
     }
     function toVault(address strategy, address token, uint256 amount) external override onlyRole(strategyToVault_role) {
-        IStrategy(strategy).toVault(token, amount);
+        IStrategy2(strategy).toVault(token, amount);
     }
     function fromVault(address strategy, address token, uint256 amount) external override onlyRole(strategyFromVault_role) {
-        IStrategy(strategy).fromVault(token, amount);
+        IStrategy2(strategy).fromVault(token, amount);
     }
     function closeAllPositions(address strategy) external override onlyRole(strategyCloseAllPositions_role) returns(bool) {
-        return IStrategy(strategy).closeAllPositions();
+        return IStrategy2(strategy).closeAllPositions();
     }
     function closePositions(address strategy, address token) external override onlyRole(strategyClosePositions_role) returns(bool success) {
-        return IStrategy(strategy).closePositions(token);
+        return IStrategy2(strategy).closePositions(token);
     }
     function updateDescription(address strategy, string memory description) external override onlyRole(strategyUpdateDescription_role) {
-        IStrategy(strategy).updateDescription(description);
+        IStrategy2(strategy).updateDescription(description);
     }
 
     // V1 functions

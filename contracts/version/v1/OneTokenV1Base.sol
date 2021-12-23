@@ -4,7 +4,6 @@ pragma solidity 0.7.6;
 pragma abicoder v2;
 
 import "../../common/ICHICommon.sol";
-import "../../_openzeppelin/token/ERC20/SafeERC20.sol";
 import "../../oz_modified/ICHIERC20Burnable.sol";
 import "../../lib/AddressSet.sol";
 import "../../interface/IOneTokenFactory.sol";
@@ -13,6 +12,7 @@ import "../../interface/IController.sol";
 import "../../interface/IStrategy.sol";
 import "../../interface/IMintMaster.sol";
 import "../../interface/IOracle.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 contract OneTokenV1Base is IOneTokenV1Base, ICHICommon, ICHIERC20Burnable {
 

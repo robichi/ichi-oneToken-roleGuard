@@ -7,8 +7,8 @@ import "./StrategyCommonState.sol";
 import "../../interface/IOneTokenFactory.sol";
 import "../../interface/IStrategy.sol";
 import "../../interface/IOneTokenV1Base.sol";
-import "../../_openzeppelin/token/ERC20/IERC20.sol";
-import "../../_openzeppelin/token/ERC20/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 contract StatelessStrategyCommon is IStrategy, StatelessICHIModuleCommon {
 

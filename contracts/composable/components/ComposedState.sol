@@ -4,10 +4,10 @@ pragma solidity 0.7.6;
 pragma abicoder v2;
 
 import '../lib/Bytes4Set.sol';
-import '../interfaces/Common.sol';
+import '../interfaces/ComposableCommon.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
-contract ComposedState is Common, Ownable {
+contract ComposedState is ComposableCommon, Ownable {
 
     using Bytes4Set for Bytes4Set.Set;
 

@@ -2,6 +2,6 @@
 
 pragma solidity 0.7.6;
 
-import "./_openzeppelin/proxy/ProxyAdmin.sol";
+import "@openzeppelin/contracts/proxy/ProxyAdmin.sol";
 
 contract OneTokenProxyAdmin is ProxyAdmin {}

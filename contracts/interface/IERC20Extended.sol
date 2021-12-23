@@ -2,7 +2,7 @@
 
 pragma solidity 0.7.6;
 
-import "../_openzeppelin/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IERC20Extended is IERC20 {
     

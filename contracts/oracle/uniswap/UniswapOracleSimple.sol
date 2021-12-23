@@ -5,12 +5,12 @@
 pragma solidity 0.7.6;
 
 import "../OracleCommon.sol";
-import "../../_openzeppelin/math/SafeMath.sol";
 import '../../_uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol';
 import '../../_uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol';
 import '../../_uniswap/lib/contracts/libraries/FixedPoint.sol';
 import '../../_uniswap/v2-periphery/contracts/libraries/UniswapV2OracleLibrary.sol';
 import '../../_uniswap/v2-periphery/contracts/libraries/UniswapV2Library.sol';
+import "@openzeppelin/contracts/math/SafeMath.sol";
 
 /**
  @notice A fixed-window oracle that recomputes the average price for the entire period once every period,

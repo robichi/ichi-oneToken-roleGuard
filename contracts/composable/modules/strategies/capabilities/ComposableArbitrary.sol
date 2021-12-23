@@ -6,10 +6,11 @@ pragma abicoder v2;
 import { StrategyCommon } from "../../../../strategy/StrategyCommon.sol";
 import { Composable } from "../../../components/Composable.sol";
 
-// TODO: Consider cleaning up superfluous code by creating a StrategyState to enable stateless StrategyCommon implementation.
-
-
 contract ComposableArbitrary is Composable {
+
+    /**
+    @notice Composables must be initialized post-deployment before they can be consumed by compositions.
+     */
 
     function initialize() external uninitialized {
         registerFunction("executeTransaction(address,uint256,string memory,bytes memory)", true);

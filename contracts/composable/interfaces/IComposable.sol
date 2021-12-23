@@ -2,9 +2,9 @@
 
 pragma solidity 0.7.6;
 
-import './Common.sol';
+import './ComposableCommon.sol';
 pragma abicoder v2;
 
-interface IComposable is Common {
+interface IComposable is ComposableCommon {
     function functions() external view returns(Function[] memory);
 }

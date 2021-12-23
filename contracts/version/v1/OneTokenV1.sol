@@ -3,8 +3,8 @@
 pragma solidity 0.7.6;
 
 import "../../interface/IOneTokenV1.sol";
-import "../../_openzeppelin/token/ERC20/SafeERC20.sol";
 import "./OneTokenV1Base.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 contract OneTokenV1 is IOneTokenV1, OneTokenV1Base {
 

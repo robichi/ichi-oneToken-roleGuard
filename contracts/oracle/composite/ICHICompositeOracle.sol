@@ -4,7 +4,7 @@ pragma solidity 0.7.6;
 
 import "../OracleCommon.sol";
 import "../../interface/IERC20Extended.sol";
-import "../../_openzeppelin/math/SafeMath.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
 
 /**
  @notice Relies on external Oracles using any price quote methodology.

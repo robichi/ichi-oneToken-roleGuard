@@ -2,7 +2,7 @@
 
 pragma solidity 0.7.6;
 
-import "../_openzeppelin/utils/Address.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 
 contract ICHIInitializable {
 

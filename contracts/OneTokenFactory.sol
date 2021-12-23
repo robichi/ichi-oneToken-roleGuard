@@ -10,7 +10,7 @@ import "./lib/AddressSet.sol";
 import "./interface/IOneTokenFactory.sol";
 import "./interface/IOneTokenV1.sol";
 import "./interface/IOracle.sol";
-import "./_openzeppelin/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract OneTokenFactory is IOneTokenFactory, ICHICommon {
 

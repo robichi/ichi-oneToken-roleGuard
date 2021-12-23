@@ -2,7 +2,7 @@
 
 pragma solidity 0.7.6;
 
-import "./_openzeppelin/proxy/TransparentUpgradeableProxy.sol";
+import "@openzeppelin/contracts/proxy/TransparentUpgradeableProxy.sol";
 
 contract OneTokenProxy is TransparentUpgradeableProxy {
 
