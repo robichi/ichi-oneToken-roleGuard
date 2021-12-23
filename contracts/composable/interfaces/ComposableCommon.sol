@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Unlicensed
+// SPDX-License-Identifier: BUSL-1.1
 
 pragma solidity 0.7.6;
 
@@ -10,6 +10,8 @@ interface ComposableCommon {
         bool delegate;
     }
 
+    // implementation is ignored for delegated functions
+    
     struct Implementation {
         string nameAndParams;
         address implementation;

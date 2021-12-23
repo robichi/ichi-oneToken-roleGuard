@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: BUSL-1.1
 
 pragma solidity 0.7.6;
 
@@ -11,7 +11,7 @@ contract StatelessDestructableAccessControl is StateSafeAccessControl {
     /**
      * @notice tears down permissions for role
      * @param role role to destroy
-     * @dev it is understood that roles member counts should not be excessive
+     * @dev WARN: roles member counts should not be excessive
      */
 
     function _destroyRole(bytes32 role) internal {
