@@ -8,7 +8,7 @@ import { StatelessStrategyCommon } from "./components/StatelessStrategyCommon.so
 // TODO: Consider a Factory to deploy instances of these
 
 /**
- Deploys a Composed Strategy supporting the minimum viable interface to OneToken Vaults and Controllers, with
+ A Composed Strategy supporting the minimum viable interface to OneToken Vaults and Controllers and
  the ability to ingest Composable extensions. 
  */
 

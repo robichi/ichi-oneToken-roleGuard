@@ -4,8 +4,11 @@ pragma solidity 0.7.6;
 
 import './interfaces/IComposedWallet.sol';
 import './components/Composed.sol';
-// import './components/StatelessDestructableAccessControl.sol';
 import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
+
+/**
+ * A Composed Role Guard supporting wallet-like functions and the ability to ingest Composable extensions. 
+ */
 
 contract ComposedWallet is  Composed, IComposedWallet  { 
 

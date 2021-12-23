@@ -7,7 +7,6 @@ import './ComposedState.sol';
 import './Composable.sol';
 import './StatelessDestructableAccessControl.sol';
 import '../interfaces/Common.sol';
-import '../lib/Bytes4Set.sol';
 
 contract Composed is Common, StatelessDestructableAccessControl { // is IStrategy
 
