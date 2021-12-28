@@ -24,25 +24,25 @@ interface IOneTokenV1Minimal {
     function executeStrategy(address token) external;
     function removeStrategy(address token) external;
     function closeStrategy(address token) external;
+    function toStrategy(address strategy, address token, uint256 amount) external;
+    function fromStrategy(address strategy, address token, uint256 amount) external;
     function increaseStrategyAllowance(address token, uint256 amount) external;
     function decreaseStrategyAllowance(address token, uint256 amount) external;
     function setFactory(address newFactory) external;
 }
 
-interface IStrategy2 {
-    function init() external;
+interface IStrategy {
     function execute() external;
     function setAllowance(address token, uint256 amount) external;
     function toVault(address token, uint256 amount) external;
     function fromVault(address token, uint256 amount) external;
     function closeAllPositions() external returns(bool);
     function closePositions(address token) external returns(bool success);
-    function oneToken() external view returns(address);
     // from IModule
     function updateDescription(string memory description) external;
 }
 
-interface IArbitrary is IStrategy2 {
+interface IArbitrary is IStrategy {
     function executeTransaction(address _target, uint256 value, string memory signature, bytes memory data) external returns (bytes memory);
 }
 
@@ -66,7 +66,7 @@ interface IRoleGuardOneTokenV1ArbitraryStrategy is IOneTokenV1Minimal, IArbitrar
     function erc20Approve(IERC20 token, address spender, uint256 value) external;
     function erc20IncreaseAllowance(IERC20 token, address spender, uint256 value) external;
     function erc20DecreaseAllowance(IERC20 token, address spender, uint256 value) external;
-    function roleGuardexecuteTransaction(address _target, uint256 value, string memory signature, bytes memory data) external returns (bytes memory);
+    function roleGuardExecuteTransaction(address _target, uint256 value, string memory signature, bytes memory data) external returns (bytes memory);
 }
 
 contract RoleGuardOneTokenV1ArbitraryStrategy is IRoleGuardOneTokenV1ArbitraryStrategy, AccessControl {
@@ -82,7 +82,7 @@ contract RoleGuardOneTokenV1ArbitraryStrategy is IRoleGuardOneTokenV1ArbitrarySt
     bytes32 public constant redeem_role = keccak256('function redeem(address collateral, uint amount)');
     bytes32 public constant setMintingFee_role = keccak256('function setMintingFee(uint fee)');
     bytes32 public constant setRedemptionFee_role = keccak256('function setRedemptionFee(uint fee)');
-    bytes32 public constant updateMintingRatio_role = keccak256('function updateMintingRatio(address collateralToken) ');
+    bytes32 public constant updateMintingRatio_role = keccak256('function updateMintingRatio(address collateralToken)');
     bytes32 public constant changeController_role = keccak256('function changeController(address controller_)');
     bytes32 public constant changeMintMaster_role = keccak256('function changeMintMaster(address mintMaster_, address oneTokenOracle)');
     bytes32 public constant addAsset_role = keccak256('function addAsset(address token, address oracle)');
@@ -91,13 +91,15 @@ contract RoleGuardOneTokenV1ArbitraryStrategy is IRoleGuardOneTokenV1ArbitrarySt
     bytes32 public constant executeStrategy_role = keccak256('function executeStrategy(address token)');
     bytes32 public constant removeStrategy_role = keccak256('function removeStrategy(address token)');
     bytes32 public constant closeStrategy_role = keccak256('function closeStrategy(address token)');
+    bytes32 public constant toStrategy_role = keccak256('function toStrategy(address strategy, address token, uint256 amount)');
+    bytes32 public constant fromStrategy_role = keccak256('function fromStrategy(address strategy, address token, uint256 amount)');
     bytes32 public constant increaseStrategyAllowance_role = keccak256('function increaseStrategyAllowance(address token, uint256 amount)');
     bytes32 public constant decreaseStrategyAllowance_role = keccak256('function decreaseStrategyAllowance(address token, uint256 amount)');
     bytes32 public constant setFactory_role = keccak256('function setFactory(address newFactory)');
 
     // strategy owner permissions
-    bytes32 public constant strategyArbitraryExecution_role = keccak256('strategyExecuteTransaction(address strategy, address _target, uint256 value, string memory signature, bytes memory data)');
-    bytes32 public constant strategyExecute_role = keccak256('function execute(address strategy) external');
+    bytes32 public constant strategyArbitraryExecution_role = keccak256('function strategyExecuteTransaction(address strategy, address _target, uint256 value, string memory signature, bytes memory data)');
+    bytes32 public constant strategyExecute_role = keccak256('function execute(address strategy)');
     bytes32 public constant strategySetAllowance_role = keccak256('function setAllowance(address strategy, address token, uint256 amount)');
     bytes32 public constant strategyToVault_role = keccak256('function toVault(address strategy, address token, uint256 amount)');
     bytes32 public constant strategyFromVault_role = keccak256('function fromVault(address strategy, address token, uint256 amount)');
@@ -139,25 +141,25 @@ contract RoleGuardOneTokenV1ArbitraryStrategy is IRoleGuardOneTokenV1ArbitrarySt
     // Common Strategy functions
 
     function execute(address strategy) external override onlyRole(strategyExecute_role) {
-        IStrategy2(strategy).execute();
+        IStrategy(strategy).execute();
     }
     function setAllowance(address strategy, address token, uint256 amount) external override onlyRole(strategySetAllowance_role) {
-        IStrategy2(strategy).setAllowance(token, amount);
+        IStrategy(strategy).setAllowance(token, amount);
     }
     function toVault(address strategy, address token, uint256 amount) external override onlyRole(strategyToVault_role) {
-        IStrategy2(strategy).toVault(token, amount);
+        IStrategy(strategy).toVault(token, amount);
     }
     function fromVault(address strategy, address token, uint256 amount) external override onlyRole(strategyFromVault_role) {
-        IStrategy2(strategy).fromVault(token, amount);
+        IStrategy(strategy).fromVault(token, amount);
     }
     function closeAllPositions(address strategy) external override onlyRole(strategyCloseAllPositions_role) returns(bool) {
-        return IStrategy2(strategy).closeAllPositions();
+        return IStrategy(strategy).closeAllPositions();
     }
     function closePositions(address strategy, address token) external override onlyRole(strategyClosePositions_role) returns(bool success) {
-        return IStrategy2(strategy).closePositions(token);
+        return IStrategy(strategy).closePositions(token);
     }
     function updateDescription(address strategy, string memory description) external override onlyRole(strategyUpdateDescription_role) {
-        IStrategy2(strategy).updateDescription(description);
+        IStrategy(strategy).updateDescription(description);
     }
 
     // V1 functions
@@ -204,6 +206,12 @@ contract RoleGuardOneTokenV1ArbitraryStrategy is IRoleGuardOneTokenV1ArbitrarySt
     function closeStrategy(address token) external override onlyRole(closeStrategy_role) {
         target.closeStrategy(token);
     }
+    function toStrategy(address strategy, address token, uint256 amount) external override onlyRole(toStrategy_role) {
+        target.toStrategy(strategy, token, amount);
+    }
+    function fromStrategy(address strategy, address token, uint256 amount) external override onlyRole(fromStrategy_role) {
+        target.fromStrategy(strategy, token, amount);
+    }
     function increaseStrategyAllowance(address token, uint256 amount) external override onlyRole(increaseStrategyAllowance_role) {
         target.increaseStrategyAllowance(token, amount);
     }
@@ -237,7 +245,7 @@ contract RoleGuardOneTokenV1ArbitraryStrategy is IRoleGuardOneTokenV1ArbitrarySt
       Runs in the RoleGuard context. See strategyExecuteTransaction to send an instruction to an Arbitrary Strategy.
      */
 
-    function roleGuardexecuteTransaction(address _target, uint256 value, string memory signature, bytes memory data) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bytes memory) {
+    function roleGuardExecuteTransaction(address _target, uint256 value, string memory signature, bytes memory data) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bytes memory) {
         bytes memory callData;
 
         if (bytes(signature).length == 0) {
