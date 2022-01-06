@@ -13,6 +13,7 @@ contract ComposedState is ComposableCommon, Ownable {
 
     Bytes4Set.Set implementationSet;
     mapping(bytes4 => Implementation) public implementation;
+    mapping(bytes32 => bytes32) public storedValue;
 
     function insert(bytes4 key, Implementation calldata imp) external onlyOwner {
         implementationSet.insert(key, 'ComposedState:insert');
@@ -26,7 +27,11 @@ contract ComposedState is ComposableCommon, Ownable {
 
     function save(bytes4 key, Implementation calldata imp) public onlyOwner {
         implementation[key] = imp;
-    }    
+    }
+
+    function setValue(bytes32 key, bytes32 value) external onlyOwner {
+        storedValue[key] = value;
+    }
 
     function exists(bytes4 key) external view returns(bool) {
         return implementationSet.exists(key);

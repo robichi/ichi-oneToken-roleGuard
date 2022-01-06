@@ -22,6 +22,7 @@ contract Composed is ComposableCommon, StatelessDestructableAccessControl { // i
     event DeployedComposedState(address sender, address state);
     event ComposableAdded(address sender, address composable, address target);
     event ComposableRemoved(address sender, address composable);
+    event SetValue(address sender, bytes32 key, bytes32 value);
 
     constructor() {
         address compo = address(new ComposedState());
@@ -177,6 +178,15 @@ contract Composed is ComposableCommon, StatelessDestructableAccessControl { // i
     }
 
     /***************************************************************************
+     * Key/Value store
+     ***************************************************************************/
+    function setValue(bytes32 key, bytes32 value) external {
+        require(msg.sender == address(this), 'Composed::setValue: unauthorized'); // only trusted components can write
+        emit SetValue(msg.sender, key, value);
+        ComposedState(composition).setValue(key, value);
+    }
+
+    /***************************************************************************
      * View functions
      ***************************************************************************/
 
@@ -198,6 +208,10 @@ contract Composed is ComposableCommon, StatelessDestructableAccessControl { // i
 
     function getRole(bytes4 selecter) public view returns(bytes32 manageableRole) {
         manageableRole = keccak256(abi.encodePacked(address(this), selecter));
+    }
+
+    function getValue(bytes32 key) external view returns(bytes32 value) {
+        value = ComposedState(composition).storedValue(key);
     }
 
     /**
