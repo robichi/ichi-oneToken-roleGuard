@@ -43,7 +43,7 @@ contract StateSafeAccessControl is Context {
             AccessControlState(state).hasRole(
                 AccessControlState(state).getRoleAdmin(role),
                 _msgSender()), 
-            "AccessControl: sender must be an admin to grant");
+            "StateSafeAccessControl: sender must be an admin to grant");
         AccessControlState(state).grantRole(role, account);
     }
 
@@ -51,12 +51,12 @@ contract StateSafeAccessControl is Context {
         require(hasRole(
                 AccessControlState(state).getRoleAdmin(role), 
                 _msgSender()), 
-            "AccessControl: sender must be an admin to revoke");
+            "StateSafeAccessControl: sender must be an admin to revoke");
         AccessControlState(state).revokeRole(role, account);
     }
 
     function renounceRole(bytes32 role, address account) public virtual {
-        require(account == _msgSender(), "AccessControl: can only renounce roles for self");
+        require(account == _msgSender(), "StateSafeAccessControl: can only renounce roles for self");
         _revokeRole(role, account);
     }
 

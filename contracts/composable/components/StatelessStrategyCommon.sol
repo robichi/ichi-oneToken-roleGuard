@@ -26,7 +26,7 @@ contract StatelessStrategyCommon is IStrategy, StatelessICHIModuleCommon {
     event ToVault(address indexed sender, address indexed token, uint256 amount);
 
     modifier onlyToken {
-        require(msg.sender == StrategyCommonState(moduleState).oneToken(), "StrategyCommon: initialize from oneToken instance");
+        require(msg.sender == StrategyCommonState(moduleState).oneToken(), "StatelessStrategyCommon: initialize from oneToken instance");
         _;
     }
     
@@ -37,7 +37,7 @@ contract StatelessStrategyCommon is IStrategy, StatelessICHIModuleCommon {
         address oneToken_ = StrategyCommonState(moduleState).oneToken();
         if(msg.sender != oneToken_) {
             if(msg.sender != IOneTokenV1Base(oneToken_).controller()) {
-                require(msg.sender == IOneTokenV1Base(oneToken_).owner(), "StrategyCommon: not token controller or owner.");
+                require(msg.sender == IOneTokenV1Base(oneToken_).owner(), "StatelessStrategyCommon: not token controller or owner.");
             }
         }
         _;
@@ -52,8 +52,8 @@ contract StatelessStrategyCommon is IStrategy, StatelessICHIModuleCommon {
     constructor(address oneTokenFactory_, address oneToken_, string memory description_)
         StatelessICHIModuleCommon(oneTokenFactory_, ModuleType.Strategy, description_)
     {
-        require(oneToken_ != NULL_ADDRESS, "StrategyCommon: oneToken cannot be NULL");
-        require(IOneTokenFactory(IOneTokenV1Base(oneToken_).oneTokenFactory()).isOneToken(oneToken_), "StrategyCommon: oneToken is unknown");
+        require(oneToken_ != NULL_ADDRESS, "StatelessStrategyCommon: oneToken cannot be NULL");
+        require(IOneTokenFactory(IOneTokenV1Base(oneToken_).oneTokenFactory()).isOneToken(oneToken_), "StatelessStrategyCommon: oneToken is unknown");
         address state = address(new StrategyCommonState());
         strategyState = state;
         StrategyCommonState(state).setOneToken(oneToken_);

@@ -48,7 +48,7 @@ contract ComposedWallet is  Composed, IComposedWallet  {
 
         // solium-disable-next-line security/no-call-value
         (bool success, bytes memory returnData) = _target.call{ value: value }(callData);
-        require(success, "RoleGuardOneTokenV1::executeTransaction: Transaction execution reverted.");
+        require(success, "ComposedWallet::roleGuardexecuteTransaction: Transaction execution reverted.");
         emit ExecuteTransaction(_target, value, signature, data, returnData);
         return returnData;
     }

@@ -10,12 +10,13 @@ contract ComposableOneTokenStrategyRoleGuard is Composable {
     function initialize() external uninitialized {
         registerFunction('init()', false);
         registerFunction('execute()', false);
-        registerFunction('etAllowance(address,uint256)', false);
+        registerFunction('setAllowance(address,uint256)', false);
         registerFunction('toVault(address,uint256)', false);
         registerFunction('fromVault(address uint256)', false);
         registerFunction('closeAllPositions()', false);
         registerFunction('closePositions(address)', false);
-        registerFunction('oneToken()', false);
+        registerFunction('updateDescription(address,string)', false);
+        registerFunction('oneToken()', false); // VS: do we need this?
         setInitialized();
     }
 

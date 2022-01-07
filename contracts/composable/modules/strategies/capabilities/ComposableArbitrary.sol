@@ -13,7 +13,7 @@ contract ComposableArbitrary is Composable {
      */
 
     function initialize() external uninitialized {
-        registerFunction("executeTransaction(address,uint256,string memory,bytes memory)", true);
+        registerFunction("executeTransaction(address,uint256,string,bytes)", true);
         setInitialized();
     }
 

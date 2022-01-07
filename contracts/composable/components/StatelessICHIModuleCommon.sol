@@ -19,18 +19,18 @@ abstract contract StatelessICHIModuleCommon is IModule, ICHICommon {
     event DescriptionUpdated(address sender, string description);
    
     modifier onlyKnownToken {
-        require(IOneTokenFactory(oneTokenFactory).isOneToken(msg.sender), "ICHIModuleCommon: msg.sender is not a known oneToken");
+        require(IOneTokenFactory(oneTokenFactory).isOneToken(msg.sender), "StatelessICHIModuleCommon: msg.sender is not a known oneToken");
         _;
     }
     
     modifier onlyTokenOwner (address oneToken) {
-        require(msg.sender == IOneTokenV1Base(oneToken).owner(), "ICHIModuleCommon: msg.sender is not oneToken owner");
+        require(msg.sender == IOneTokenV1Base(oneToken).owner(), "StatelessICHIModuleCommon: msg.sender is not oneToken owner");
         _;
     }
 
     modifier onlyModuleOrFactory {
         if(!IOneTokenFactory(oneTokenFactory).isModule(msg.sender)) {
-            require(msg.sender == oneTokenFactory, "ICHIModuleCommon: msg.sender is not module owner, token factory or registed module");
+            require(msg.sender == oneTokenFactory, "StatelessICHIModuleCommon: msg.sender is not module owner, token factory or registed module");
         }
         _;
     }
@@ -42,8 +42,8 @@ abstract contract StatelessICHIModuleCommon is IModule, ICHICommon {
      @param description_ human-readable, descriptive only
      */    
     constructor (address oneTokenFactory_, ModuleType moduleType_, string memory description_) {
-        require(oneTokenFactory_ != NULL_ADDRESS, "ICHIModuleCommon: oneTokenFactory cannot be empty");
-        require(bytes(description_).length > 0, "ICHIModuleCommon: description cannot be empty");
+        require(oneTokenFactory_ != NULL_ADDRESS, "StatelessICHIModuleCommon: oneTokenFactory cannot be empty");
+        require(bytes(description_).length > 0, "StatelessICHIModuleCommon: description cannot be empty");
         address state = address(new ICHIModuleCommonState());
         moduleState = state;
         oneTokenFactory = oneTokenFactory_;
@@ -58,7 +58,7 @@ abstract contract StatelessICHIModuleCommon is IModule, ICHICommon {
      @param description new module desciption
      */
     function updateDescription(string memory description) external onlyOwner override {
-        require(bytes(description).length > 0, "ICHIModuleCommon: description cannot be empty");
+        require(bytes(description).length > 0, "StatelessICHIModuleCommon: description cannot be empty");
         ICHIModuleCommonState(moduleState).setModuleDescription(description);
         emit DescriptionUpdated(msg.sender, description);
     }  
