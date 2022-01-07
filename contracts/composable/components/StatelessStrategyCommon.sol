@@ -26,7 +26,7 @@ contract StatelessStrategyCommon is IStrategy, StatelessICHIModuleCommon {
     event ToVault(address indexed sender, address indexed token, uint256 amount);
 
     modifier onlyToken {
-        require(msg.sender == StrategyCommonState(moduleState).oneToken(), "StatelessStrategyCommon: initialize from oneToken instance");
+        require(msg.sender == StrategyCommonState(strategyState).oneToken(), "StatelessStrategyCommon: initialize from oneToken instance");
         _;
     }
     
@@ -34,7 +34,7 @@ contract StatelessStrategyCommon is IStrategy, StatelessICHIModuleCommon {
      @dev oneToken governance has privileges that may be delegated to a controller
      */
     modifier strategyOwnerTokenOrController {
-        address oneToken_ = StrategyCommonState(moduleState).oneToken();
+        address oneToken_ = StrategyCommonState(strategyState).oneToken();
         if(msg.sender != oneToken_) {
             if(msg.sender != IOneTokenV1Base(oneToken_).controller()) {
                 require(msg.sender == IOneTokenV1Base(oneToken_).owner(), "StatelessStrategyCommon: not token controller or owner.");
@@ -65,7 +65,7 @@ contract StatelessStrategyCommon is IStrategy, StatelessICHIModuleCommon {
      @notice a strategy is dedicated to exactly one oneToken instance and must be re-initializable
      */
     function init() external onlyToken virtual override {
-        address oneToken_ = StrategyCommonState(moduleState).oneToken();
+        address oneToken_ = StrategyCommonState(strategyState).oneToken();
         IERC20(oneToken_).safeApprove(oneToken_, 0);
         IERC20(oneToken_).safeApprove(oneToken_, INFINITE);
         emit StrategyInitialized(oneToken_);
@@ -86,7 +86,7 @@ contract StatelessStrategyCommon is IStrategy, StatelessICHIModuleCommon {
      @param amount the allowance. 0 = infinte
      */
     function setAllowance(address token, uint256 amount) external strategyOwnerTokenOrController override {
-        address oneToken_ = StrategyCommonState(moduleState).oneToken();
+        address oneToken_ = StrategyCommonState(strategyState).oneToken();
         if(amount == 0) amount = INFINITE;
         IERC20(token).safeApprove(oneToken_, 0);
         IERC20(token).safeApprove(oneToken_, amount);
@@ -106,7 +106,7 @@ contract StatelessStrategyCommon is IStrategy, StatelessICHIModuleCommon {
      @dev override this function to withdraw funds from external contracts. Return false if any funds are unrecovered.
      */
     function _closeAllPositions() internal virtual returns(bool success) {
-        address oneToken_ = StrategyCommonState(moduleState).oneToken();
+        address oneToken_ = StrategyCommonState(strategyState).oneToken();
         uint256 assetCount;
         success = true;
         assetCount = IOneTokenV1Base(oneToken_).assetCount();
@@ -168,16 +168,16 @@ contract StatelessStrategyCommon is IStrategy, StatelessICHIModuleCommon {
      @param amount the amount of tokens to send
      */
     function _fromVault(address token, uint256 amount) internal {
-        address oneToken_ = StrategyCommonState(moduleState).oneToken();
+        address oneToken_ = StrategyCommonState(strategyState).oneToken();
         IERC20(token).safeTransferFrom(oneToken_, address(this), amount);
         emit FromVault(msg.sender, token, amount);
     }
 
     function oneToken() external view override returns(address) {
-        return StrategyCommonState(moduleState).oneToken();
+        return StrategyCommonState(strategyState).oneToken();
     }
 
     function moduleDescription() external view override returns(string memory) {
-        return ICHIModuleCommonState(moduleState).moduleDescription();
+        return ICHIModuleCommonState(strategyState).moduleDescription();
     }
 }

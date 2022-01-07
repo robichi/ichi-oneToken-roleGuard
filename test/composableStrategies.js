@@ -5,6 +5,7 @@ const { expectEvent } = require("@openzeppelin/test-helpers");
 const
 	ArbitraryStrategy = artifacts.require("Arbitrary"),
 	ComposedStrategy = artifacts.require("ComposedStrategy"),
+	StrategyCommonState = artifacts.require("StrategyCommonState"),
 	NullStrategy = artifacts.require("NullStrategy"),
 	OraclePegged = artifacts.require("ICHIPeggedOracle"),
 	Factory = artifacts.require("OneTokenFactory"),
@@ -81,7 +82,14 @@ contract("Composable strategies", accounts => {
 		//console.log(oneTokenAddress.toString());
 
 		composedStrategy = await ComposedStrategy.new(factory.address, oneTokenAddress, "Test Composed StrategyCommon")
-		// console.log("state = " + (await composedStrategy.moduleState()));
+		/*
+		let sState = await composedStrategy.strategyState();
+		console.log("stratgy state, sState");
+		let strategyCommonState = await StrategyCommonState.at(sState);
+		console.log("StrategyCommonState.sol", strategyCommonState);
+		let ot = await strategyCommonState.oneToken();
+		console.log("One Token from strategy state", ot);
+		*/
 	});
 	
 	it("should be ready to test", async () => {
