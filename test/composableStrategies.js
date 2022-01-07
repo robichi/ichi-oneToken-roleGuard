@@ -4,6 +4,7 @@ const { expectEvent } = require("@openzeppelin/test-helpers");
 
 const
 	ArbitraryStrategy = artifacts.require("Arbitrary"),
+	ComposedStrategy = artifacts.require("ComposedStrategy"),
 	NullStrategy = artifacts.require("NullStrategy"),
 	OraclePegged = artifacts.require("ICHIPeggedOracle"),
 	Factory = artifacts.require("OneTokenFactory"),
@@ -23,7 +24,8 @@ let governance,
     secondOneToken,
     secondOneTokenAddress,
 	factory, 
-	arbitraryStrategy, 
+	arbitraryStrategy,
+	composedStrategy, 
     controller,
     mintMaster,
     oracle,
@@ -75,6 +77,11 @@ contract("Composable strategies", accounts => {
         )
         secondOneTokenAddress = await factory.oneTokenAtIndex(1);
         secondOneToken = await OneToken.at(secondOneTokenAddress);
+
+		//console.log(oneTokenAddress.toString());
+
+		composedStrategy = await ComposedStrategy.new(factory.address, oneTokenAddress, "Test Composed StrategyCommon")
+		// console.log("state = " + (await composedStrategy.moduleState()));
 	});
 	
 	it("should be ready to test", async () => {
@@ -84,22 +91,16 @@ contract("Composable strategies", accounts => {
 	
 	
 	it("should be constructed with one token", async () => {
-		const factory = await Factory.deployed();
-		let contract = arbitraryStrategy = await ArbitraryStrategy.new(factory.address, oneTokenAddress, "Test StrategyCommon")
-		assert.isNotNull(arbitraryStrategy.address, "There is no token for strategy");
-
-		expectEvent.inConstruction(contract, 'StrategyDeployed', {
-			sender: governance
-		})
+		assert.isNotNull(composedStrategy.address, "There is no token for strategy");
 	});
 	
 	it("should have 0 allowance before init", async () => {
-		const allowance = await oneToken.allowance(oneTokenAddress, arbitraryStrategy.address)
+		const allowance = await oneToken.allowance(oneTokenAddress, composedStrategy.address)
 		assert.equal(allowance.toNumber(), 0, "should have 0 allowance before init");
 	});
 	
 	it("should be able to init", async () => {
-		await factory.admitModule(arbitraryStrategy.address, moduleType.strategy, "arbitraryStrategy", "#")
+		await factory.admitModule(composedStrategy.address, moduleType.strategy, "composedStrategy", "#")
 		
 		collateralToken = await CollateralToken.new();
 		const oraclePegged = await OraclePegged.new(factory.address, "oracleName", collateralToken.address);
@@ -109,32 +110,18 @@ contract("Composable strategies", accounts => {
 		
 		// we need to init via oneToken to make it right
 		let allowance1 = 1000;
-		let tx = await oneToken.setStrategy(collateralToken.address, arbitraryStrategy.address, allowance1);
+		let tx = await oneToken.setStrategy(collateralToken.address, composedStrategy.address, allowance1);
 		expectEvent(tx, 'StrategySet', {
 			sender: governance,
 			token: collateralToken.address,
-			strategy: arbitraryStrategy.address,
+			strategy: composedStrategy.address,
 			allowance: allowance1.toString()
 		})
 
 		// test event from StrategyCommon
-        expectEvent.inTransaction(tx.tx, StrategyCommon, 'StrategyInitialized', {
-			sender: oneToken.address
-		})
+        //expectEvent.inTransaction(tx.tx, StrategyCommon, 'StrategyInitialized', {
+		//	sender: oneToken.address
+		//})
 	});
 	
-	it("setAllowance to non-zero", async () => {
-		const randomToken = await OneToken.new();
-		let amount = 5;
-		let tx = await arbitraryStrategy.setAllowance(randomToken.address, amount);
-		const allowance = await randomToken.allowance(arbitraryStrategy.address, oneTokenAddress)
-		assert.equal(allowance.toNumber(), amount, "should have amount allowance");
-
-		expectEvent(tx, 'VaultAllowance', {
-			sender: governance,
-			token: randomToken.address,
-			amount: amount.toString()
-		})
-	});
-		
 });
