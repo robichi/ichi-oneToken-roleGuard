@@ -8,7 +8,7 @@ import '../interfaces/IComposable.sol';
 import '../lib/Bytes4Set.sol';
 
 /**************************************************************************************************************************
- * Composables should inherit this and register their external unctions from constructors - append only
+ * Composables should inherit this and register their external functions from constructors - append only
  **************************************************************************************************************************/
 
 contract Composable is IComposable { 

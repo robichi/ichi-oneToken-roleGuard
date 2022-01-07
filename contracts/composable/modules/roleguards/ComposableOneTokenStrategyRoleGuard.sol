@@ -12,7 +12,7 @@ contract ComposableOneTokenStrategyRoleGuard is Composable {
         registerFunction('execute()', false);
         registerFunction('setAllowance(address,uint256)', false);
         registerFunction('toVault(address,uint256)', false);
-        registerFunction('fromVault(address uint256)', false);
+        registerFunction('fromVault(address,uint256)', false);
         registerFunction('closeAllPositions()', false);
         registerFunction('closePositions(address)', false);
         registerFunction('updateDescription(address,string)', false);
