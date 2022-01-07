@@ -127,9 +127,9 @@ contract("Composable strategies", accounts => {
 		})
 
 		// test event from StrategyCommon
-        //expectEvent.inTransaction(tx.tx, StrategyCommon, 'StrategyInitialized', {
-		//	sender: oneToken.address
-		//})
+        expectEvent.inTransaction(tx.tx, StrategyCommon, 'StrategyInitialized', {
+			sender: oneToken.address
+		})
 	});
 	
 });
